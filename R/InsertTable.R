@@ -419,8 +419,10 @@ insertTable.DatabaseConnectorDbiConnection <- function(connection,
   
   tableName <- gsub("^#", "", tableName)
   if (dbms(connection) == 'bigquery') {
-    #Spark does not support temp tables, so emulate
-    tableName <- SqlRender::translate(sprintf("#%s", tableName), targetDialect = "bigquery", tempEmulationSchema = NULL)
+    if (tempTable) {
+      #bigquery does not support temp tables, so emulate
+      tableName <- SqlRender::translate(sprintf("#%s", tableName), targetDialect = "bigquery", tempEmulationSchema = NULL)  
+    }
 
     # use bigrquery load for bigquery
     if (!requireNamespace("bigrquery", quietly = TRUE)) {

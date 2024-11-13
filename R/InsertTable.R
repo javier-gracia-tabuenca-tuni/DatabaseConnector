@@ -437,7 +437,7 @@ insertTable.DatabaseConnectorDbiConnection <- function(connection,
     bq_table <- bigrquery::bq_table(bq_project, bq_dataset, bq_table_name)
 
     startTime <- Sys.time()
-    if (dropTableIfExists) {
+    if (dropTableIfExists && bigrquery::bq_table_exists(bq_table)) {
       bigrquery::bq_table_delete(bq_table)
     }
     bigrquery::bq_table_upload(bq_table, data)

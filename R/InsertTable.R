@@ -444,7 +444,7 @@ insertTable.DatabaseConnectorDbiConnection <- function(connection,
     delta <- Sys.time() - startTime
     inform(paste("Inserting data took", signif(delta, 3), attr(delta, "units")))
 
-    return(NULL)
+    return(invisible(NULL))
   }
   if (dbms(connection) == "sqlite") {
     # Convert dates and datetime to UNIX timestamp:

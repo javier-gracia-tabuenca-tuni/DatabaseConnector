@@ -440,7 +440,7 @@ insertTable.DatabaseConnectorDbiConnection <- function(connection,
     if (dropTableIfExists && bigrquery::bq_table_exists(bq_table)) {
       bigrquery::bq_table_delete(bq_table)
     }
-    bigrquery::bq_table_upload(bq_table, data)
+    bigrquery::bq_table_upload(bq_table, values = data, fields = data) # if fields is not provided, it will make <chr> columns with all NAs
     delta <- Sys.time() - startTime
     inform(paste("Inserting data took", signif(delta, 3), attr(delta, "units")))
 

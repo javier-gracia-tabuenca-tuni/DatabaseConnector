@@ -484,6 +484,14 @@ insertTable.default <- function(connection,
     }
     
   }
+  if (dbms(connection) == "bigquery") {
+    if (tempTable) {
+      #BigQuery does not support temp tables, so emulate
+      databaseSchema = tempEmulationSchema
+      tableName <- SqlRender::translate(sprintf("#%s", tableName), targetDialect = "bigquery", tempEmulationSchema = NULL)
+      tempTable <- FALSE
+    }
+  }
   
   logTrace(sprintf("Inserting %d rows into table '%s' ", nrow(data), tableName))
   if (!is.null(databaseSchema)) {

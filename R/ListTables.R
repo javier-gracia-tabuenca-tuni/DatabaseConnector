@@ -44,7 +44,7 @@ setMethod(
         }
         sql <- sprintf("SELECT table_name FROM information_schema.tables WHERE table_schema = '%s';", databaseSchema)
         tables <- querySql(conn, sql)[[1]]
-      }else if (!is.null(databaseSchema) && dbms(conn) == "bigquery") {
+      } else if (!is.null(databaseSchema) && dbms(conn) == "bigquery") {
         if (!grepl("\\.", databaseSchema)) {
           abort("databaseSchema must contain full path when using bigquery as <project>.<database>")
         }

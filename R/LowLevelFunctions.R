@@ -121,11 +121,6 @@ lowLevelExecuteSql <- function(connection, sql) {
     rowsAffected <- sanitizeJavaErrorForRlang(rJava::.jcall(statement, "J", "executeLargeUpdate", as.character(sql), check = FALSE))
   }
   
-  if (dbms(connection) == "bigquery") {
-    delayIfNecessaryForDdl(sql)
-    delayIfNecessaryForInsert(sql)
-  }
-  
   invisible(rowsAffected)
 }
 

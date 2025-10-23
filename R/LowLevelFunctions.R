@@ -84,7 +84,8 @@ delayIfNecessary <- function(sql, regex, executionTimes, threshold) {
     if (!is.na(lastExecutedTime) && !is.null(lastExecutedTime)) {
       delta <- difftime(currentTime, lastExecutedTime, units = "secs") 
       if (delta < threshold) {
-        Sys.sleep(threshold - delta)
+        Sys.sleep(threshold - delta) 
+        message(paste("Delayed for", threshold - delta, "seconds for", tableName))
       }
     }
     executionTimes[[tableName]] <- currentTime

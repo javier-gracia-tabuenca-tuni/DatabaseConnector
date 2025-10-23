@@ -444,7 +444,7 @@ setMethod(
   function(conn, statement, ...) {
     rowsAffected <- DBI::dbExecute(conn@dbiConnection, statement)
 
-    if (dbms(connection) == "bigquery") {
+    if (conn@dbms == "bigquery") {
       delayIfNecessaryForDdl(statement)
       delayIfNecessaryForInsert(statement)
     }

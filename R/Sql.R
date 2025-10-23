@@ -38,8 +38,8 @@
 
 .createErrorReport <- function(dbms, err, sql, fileName) {
   message <- err$message
-  if (dbms(connection) == "bigquery" & class(connection) %in% "DatabaseConnectorDbiConnection") {
-     message  <- paste0(message, "\n", err$body)
+  if (dbms == "bigquery" && !is.null(err$body)) {
+    message  <- paste0(message, "\n", err$body)
   }
   report <- c("DBMS:\n", dbms, "\n\nError:\n", message, "\n\nSQL:\n", sql, "\n\n", .systemInfo())
   fileConn <- file(fileName)

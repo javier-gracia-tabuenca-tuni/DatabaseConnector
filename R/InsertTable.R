@@ -493,16 +493,16 @@ insertTable.default <- function(connection,
     }
     if (dropTableIfExists) {
       # bigrquery::bq_table_upload is not dropping tables, so we need to do it manually
-      sql <- "DROP TABLE IF EXISTS @databaseSchema@tableName;"
+      sql <- "DROP TABLE IF EXISTS @tableName;"
       renderTranslateExecuteSql(
         connection = connection,
         sql = sql,
-        databaseSchema = databaseSchema,
         tableName = tableName,
         tempEmulationSchema = tempEmulationSchema,
         progressBar = FALSE,
         reportOverallTime = FALSE
       )
+      dropTableIfExists <- FALSE
     }
   }
   

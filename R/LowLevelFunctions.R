@@ -94,12 +94,12 @@ delayIfNecessary <- function(sql, regex, executionTimes, threshold) {
 
 delayIfNecessaryForDdl <- function(sql) {
   regexForDdl <- "(^CREATE\\s+TABLE\\s+IF\\s+EXISTS|^CREATE\\s+TABLE|^DROP\\s+TABLE\\s+IF\\s+EXISTS|^DROP\\s+TABLE)\\s+([a-zA-Z0-9_$#-]*\\.?\\s*(?:[a-zA-Z0-9_]+)*\\.?\\s*(?:[a-zA-Z0-9_]+))"
-  delayIfNecessary(sql, regexForDdl, ddlExecutionTimes, 5)
+  delayIfNecessary(sql, regexForDdl, ddlExecutionTimes, options(bigqueryDdlDelay, default = 5))
 }
 
 delayIfNecessaryForInsert <- function(sql) {
   regexForInsert <- "(^INSERT\\s+INTO)\\s+([a-zA-Z0-9_$#-]*\\.?\\s*(?:[a-zA-Z0-9_]+)*\\.?\\s*(?:[a-zA-Z0-9_]+))"
-  delayIfNecessary(sql, regexForInsert, insertExecutionTimes, 5)
+  delayIfNecessary(sql, regexForInsert, insertExecutionTimes, options(bigqueryInsertDelay, default = 5))
 }
 
 # This helper function helps rlang handle rJava errors thrown by DatabaseConnector

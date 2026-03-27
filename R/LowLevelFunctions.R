@@ -84,7 +84,8 @@ delayIfNecessary <- function(sql, regex, executionTimes, threshold) {
     if (!is.na(lastExecutedTime) && !is.null(lastExecutedTime)) {
       delta <- difftime(currentTime, lastExecutedTime, units = "secs") 
       if (delta < threshold) {
-        Sys.sleep(threshold - delta)
+        Sys.sleep(threshold - delta) 
+        message(paste("Delayed for", threshold - delta, "seconds for", tableName))
       }
     }
     executionTimes[[tableName]] <- currentTime
@@ -92,13 +93,13 @@ delayIfNecessary <- function(sql, regex, executionTimes, threshold) {
 }
 
 delayIfNecessaryForDdl <- function(sql) {
-  regexForDdl <- "(^CREATE\\s+TABLE\\s+IF\\s+EXISTS|^CREATE\\s+TABLE|^DROP\\s+TABLE\\s+IF\\s+EXISTS|^DROP\\s+TABLE)\\s+([a-zA-Z0-9_$#-]*\\.?\\s*(?:[a-zA-Z0-9_]+)*)"
-  delayIfNecessary(sql, regexForDdl, ddlExecutionTimes, 5)
+  regexForDdl <- "(^CREATE\\s+TABLE\\s+IF\\s+EXISTS|^CREATE\\s+TABLE|^DROP\\s+TABLE\\s+IF\\s+EXISTS|^DROP\\s+TABLE)\\s+([a-zA-Z0-9_$#-]*\\.?\\s*(?:[a-zA-Z0-9_]+)*\\.?\\s*(?:[a-zA-Z0-9_]+))"
+  delayIfNecessary(sql, regexForDdl, ddlExecutionTimes, getOption("bigqueryDdlDelay", default = 5))
 }
 
 delayIfNecessaryForInsert <- function(sql) {
-  regexForInsert <- "(^INSERT\\s+INTO)\\s+([a-zA-Z0-9_$#-]*\\.?\\s*(?:[a-zA-Z0-9_]+)*)"
-  delayIfNecessary(sql, regexForInsert, insertExecutionTimes, 5)
+  regexForInsert <- "(^INSERT\\s+INTO)\\s+([a-zA-Z0-9_$#-]*\\.?\\s*(?:[a-zA-Z0-9_]+)*\\.?\\s*(?:[a-zA-Z0-9_]+))"
+  delayIfNecessary(sql, regexForInsert, insertExecutionTimes, getOption("bigqueryInsertDelay", default = 5))
 }
 
 # This helper function helps rlang handle rJava errors thrown by DatabaseConnector
@@ -119,11 +120,6 @@ lowLevelExecuteSql <- function(connection, sql) {
     }
   } else {
     rowsAffected <- sanitizeJavaErrorForRlang(rJava::.jcall(statement, "J", "executeLargeUpdate", as.character(sql), check = FALSE))
-  }
-  
-  if (dbms(connection) == "bigquery") {
-    delayIfNecessaryForDdl(sql)
-    delayIfNecessaryForInsert(sql)
   }
   
   invisible(rowsAffected)
